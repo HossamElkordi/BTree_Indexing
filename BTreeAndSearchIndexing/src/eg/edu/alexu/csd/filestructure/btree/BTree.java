@@ -24,10 +24,12 @@ public class BTree<K extends Comparable<K>, V> implements IBTree<K, V> {
 		if((key == null) || (value == null)) throw new RuntimeErrorException(null);
 		
 		if(root == null) {
+			
 			root = new BTreeNode<K, V>(true);
 			root.getKeys().add(key);
 			root.getValues().add(value);
 			root.setNumOfKeys(1);
+			
 		}else {
 			insertHelper(key, value, root, null);
 		}
