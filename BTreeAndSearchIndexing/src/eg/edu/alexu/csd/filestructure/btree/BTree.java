@@ -31,13 +31,58 @@ public class BTree<K extends Comparable<K>, V> implements IBTree<K, V> {
 			root.setNumOfKeys(1);
 			
 		}else {
-			insertHelper(key, value, root, null);
+			insertProactive(key, value, root);
+//			insertReactiveHelper(key, value, root, null);
 		}
 	}
 
-	private void insertHelper(K key, V value, IBTreeNode<K, V> node, IBTreeNode<K, V> parent) {
+//	======================== Reactive Insert ========================
+	
+//	private void insertReactiveHelper(K key, V value, IBTreeNode<K, V> node, IBTreeNode<K, V> parent) {
+//		if(node.isLeaf()) {
+//			if(recursiveSearch(key, node) != null) return;
+//			// put the (key, value) at the end of the list and swap them until the right place
+//			node.getKeys().add(key);
+//			node.getValues().add(value);			
+//			int i = node.getNumOfKeys();
+//			while((i > 0) && (node.getKeys().get(i).compareTo(node.getKeys().get(i-1)) < 0)) {
+//				swapKeyValue(node, i, i - 1);
+//				--i;
+//			}
+//			node.setNumOfKeys(node.getNumOfKeys() + 1);
+//			
+//			if(node.getNumOfKeys() > ((2 * this.minDegree) - 1)) {
+//				fixUpInsert(node, parent);
+//			}
+//		}else {
+//			int index = indexOfKey(key, node);
+//			insertReactiveHelper(key, value, node.getChildren().get(index), node);
+//			if(node.getNumOfKeys() > ((2 * this.minDegree) - 1)) {
+//				fixUpInsert(node, parent);
+//			}
+//		}
+//	}
+	
+//	======================== End Reactive Insert ========================
+	
+//	======================== Proactive Insert ========================
+	
+	private void insertProactive(K key, V value, IBTreeNode<K, V> root) {
+		if(root.getNumOfKeys() == ((2 * this.minDegree) - 1)) {
+			fixUpInsert(root, null);
+			if(key.compareTo(this.root.getKeys().get(0)) < 0) {
+				insertProactiveHelper(key, value, this.root.getChildren().get(0), root);
+			}else {
+				insertProactiveHelper(key, value, this.root.getChildren().get(1), root);
+			}
+		}else {
+			insertProactiveHelper(key, value, root, null);
+		}
+	}
+	
+	private void insertProactiveHelper(K key, V value, IBTreeNode<K, V> node, IBTreeNode<K, V> parent) {
+		if(recursiveSearch(key, node) != null) return;
 		if(node.isLeaf()) {
-			if(recursiveSearch(key, node) != null) return;
 			// put the (key, value) at the end of the list and swap them until the right place
 			node.getKeys().add(key);
 			node.getValues().add(value);			
@@ -47,18 +92,17 @@ public class BTree<K extends Comparable<K>, V> implements IBTree<K, V> {
 				--i;
 			}
 			node.setNumOfKeys(node.getNumOfKeys() + 1);
-			
-			if(node.getNumOfKeys() > ((2 * this.minDegree) - 1)) {
-				fixUpInsert(node, parent);
-			}
 		}else {
 			int index = indexOfKey(key, node);
-			insertHelper(key, value, node.getChildren().get(index), node);
-			if(node.getNumOfKeys() > ((2 * this.minDegree) - 1)) {
-				fixUpInsert(node, parent);
+			IBTreeNode<K, V> toGoNext = node.getChildren().get(index);
+			if(toGoNext.getNumOfKeys() == ((2 * this.minDegree) - 1)) {
+				fixUpInsert(toGoNext, node);
 			}
+			insertProactiveHelper(key, value, node.getChildren().get(indexOfKey(key, node)), node);
 		}
 	}
+	
+//  ======================== End Proactive Insert ========================
 	
 	private void fixUpInsert(IBTreeNode<K, V> node, IBTreeNode<K, V> parent) {
 		int median = node.getNumOfKeys() / 2;
@@ -74,22 +118,23 @@ public class BTree<K extends Comparable<K>, V> implements IBTree<K, V> {
 	}
 	
 	private void split(IBTreeNode<K, V> node, IBTreeNode<K, V> splitted, IBTreeNode<K, V> parent, int median) {
+		int k = median + 1;
 		for(int i = median + 1; i < node.getNumOfKeys(); i++) {
-			splitted.getKeys().add(node.getKeys().get(i));
-			splitted.getValues().add(node.getValues().get(i));
+			splitted.getKeys().add(node.getKeys().remove(k));
+			splitted.getValues().add(node.getValues().remove(k));
 			splitted.setNumOfKeys(splitted.getNumOfKeys() + 1);
 		}
 		
 		if(!node.isLeaf()) {
-			for(int i = median; i < (node.getNumOfKeys() + 1); i++) {
-				splitted.getChildren().add(node.getChildren().get(i));
+			for(int i = median + 1; i < (node.getNumOfKeys() + 1); i++) {
+				splitted.getChildren().add(node.getChildren().remove(k));
 			}
 		}
 		
 		node.setNumOfKeys(node.getNumOfKeys() - splitted.getNumOfKeys());
 		
-		parent.getKeys().add(node.getKeys().get(median));
-		parent.getValues().add(node.getValues().get(median));
+		parent.getKeys().add(node.getKeys().remove(median));
+		parent.getValues().add(node.getValues().remove(median));
 		parent.getChildren().add(splitted);
 		int i = parent.getNumOfKeys();
 		int j = i + 1;
@@ -106,15 +151,6 @@ public class BTree<K extends Comparable<K>, V> implements IBTree<K, V> {
 		}
 		node.setNumOfKeys(node.getNumOfKeys() - 1);
 		parent.setNumOfKeys(parent.getNumOfKeys() + 1);
-		
-		
-		node.getKeys().removeAll(splitted.getKeys());
-		node.getValues().removeAll(splitted.getValues());
-		if(!node.isLeaf()) node.getChildren().removeAll(splitted.getChildren());
-		
-		node.getKeys().remove(node.getKeys().size() - 1);
-		node.getValues().remove(node.getValues().size() - 1);
-		
 	}
 	
 	public V search(K key) {
