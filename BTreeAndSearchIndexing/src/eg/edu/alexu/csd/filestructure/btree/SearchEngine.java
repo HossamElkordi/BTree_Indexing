@@ -60,7 +60,7 @@ private List<ISearchResult>answer;
 				return Integer.parseInt(o1.getId()) - Integer.parseInt(o2.getId());
 			}
 		});
-		return answer;
+		return answer.subList(0,2);
 	}
 
 	private void Traversal(String word,IBTreeNode root)
