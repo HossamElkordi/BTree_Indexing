@@ -50,7 +50,7 @@ private List<ISearchResult>answer;
 	public List<ISearchResult> searchByWordWithRanking(String word) {
 		if(word==null)
 			throw new RuntimeErrorException(null);
-		if(word.trim().equals(""))
+		if(word.trim().equals("")||btree.getRoot()==null)
 			return new ArrayList<>();
 		answer=new ArrayList<>();
 		Traversal(word.trim().toLowerCase(),btree.getRoot());
