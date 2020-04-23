@@ -54,7 +54,12 @@ private List<ISearchResult>answer;
 			return new ArrayList<>();
 		answer=new ArrayList<>();
 		Traversal(word.trim().toLowerCase(),btree.getRoot());
-		Collections.sort(answer, Comparator.comparingInt(ISearchResult::getRank));
+		Collections.sort(answer, new Comparator<ISearchResult>() {
+			@Override
+			public int compare(ISearchResult o1, ISearchResult o2) {
+				return Integer.parseInt(o1.getId()) - Integer.parseInt(o2.getId());
+			}
+		});
 		return answer;
 	}
 
@@ -64,17 +69,16 @@ private List<ISearchResult>answer;
 			return;
 		for(int i=0;i<root.getNumOfKeys();++i)
 		{
-			String text=root.getValues().toString();
-			String[] Occurrence =text.trim().split("\\W+");
+			String text=root.getValues().get(i).toString().trim();
+			String[] Occurrence =text.split("\\W+");
 			int count=0;
 			for(String str: Occurrence)
 			{
 				if(word.equals(str.trim().toLowerCase()))
 					++count;
-				else
-					System.out.println(str.trim().toLowerCase());
 			}
-			answer.add(new SearchResult(root.getKeys().get(i).toString(),count));
+			if(count!=0)
+				answer.add(new SearchResult(root.getKeys().get(i).toString(),count));
 		}
 		if(root.getChildren()!=null)
 		{
@@ -88,7 +92,8 @@ private List<ISearchResult>answer;
 			throw new RuntimeErrorException(null);
 		if(sentence.trim().equals(""))
 			return new ArrayList<>();
-		String[] split = sentence.trim().split("\\W+");
+		sentence=sentence.trim();
+		String[] split = sentence.split("\\W+");
 		answer = searchByWordWithRanking(split[0]);
 		for(int i = 1; i < split.length; i++) {
 			String str = split[i];
