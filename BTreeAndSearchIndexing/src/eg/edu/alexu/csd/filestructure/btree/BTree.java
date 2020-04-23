@@ -36,7 +36,6 @@ public class BTree<K extends Comparable<K>, V> implements IBTree<K, V> {
 			
 		}else {
 			insertProactive(key, value, root);
-//			insertReactiveHelper(key, value, root, null);
 		}
 	}
 
