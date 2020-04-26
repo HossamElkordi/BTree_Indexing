@@ -52,7 +52,7 @@ private List<ISearchResult>answer;
 			throw new RuntimeErrorException(null);
 		if(word.trim().equals(""))
 			return new ArrayList<>();
-		answer=new ArrayList<>();
+		answer=new ArrayList<ISearchResult>();
 		Traversal(word.trim().toLowerCase(),btree.getRoot());
 		Collections.sort(answer, new Comparator<ISearchResult>() {
 			@Override
@@ -63,13 +63,13 @@ private List<ISearchResult>answer;
 		return answer;
 	}
 
-	private void Traversal(String word,IBTreeNode root)
+	private void Traversal(String word,IBTreeNode<String, String> root)
 	{
 		if(root==null)
 			return;
 		for(int i=0;i<root.getNumOfKeys();++i)
 		{
-			String text=root.getValues().get(i).toString().trim();
+			String text=root.getValues().get(i).trim();
 			String[] Occurrence =text.split("\\W+");
 			int count=0;
 			for(String str: Occurrence)
@@ -78,12 +78,12 @@ private List<ISearchResult>answer;
 					++count;
 			}
 			if(count!=0)
-				answer.add(new SearchResult(root.getKeys().get(i).toString(),count));
+				answer.add(new SearchResult(root.getKeys().get(i),count));
 		}
 		if(root.getChildren()!=null)
 		{
-			for(Object child:root.getChildren())
-				Traversal(word,(IBTreeNode)child);
+			for(IBTreeNode<String, String> child:root.getChildren())
+				Traversal(word, child);
 		}
 	}
 
