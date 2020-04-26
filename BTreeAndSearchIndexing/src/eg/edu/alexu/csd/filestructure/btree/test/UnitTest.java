@@ -1055,7 +1055,6 @@ public class UnitTest {
 	/**
 	 * Test searchByMultipleWordWithRanking cases.
 	 */
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testsearchByMultipleWordWithRanking() {
 
