@@ -5,7 +5,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.management.RuntimeErrorException;
 import javax.xml.parsers.DocumentBuilder;
@@ -20,8 +23,10 @@ import org.xml.sax.SAXException;
 
 public class SearchEngine implements ISearchEngine{
 
-private final IBTree<String, String> btree;
-private List<ISearchResult>answer;
+	private final IBTree<String, String> btree;
+	private List<ISearchResult>answer;
+	private Map<Integer, String> rkPairs;
+
 	public SearchEngine(int minDegree) {
 		btree = new BTree<String, String>(minDegree);
 	}
@@ -49,18 +54,89 @@ private List<ISearchResult>answer;
 
 	public List<ISearchResult> searchByWordWithRanking(String word) {
 		if(word==null)
-			throw new RuntimeErrorException(null);
-		if(word.trim().equals(""))
-			return new ArrayList<>();
-		answer=new ArrayList<ISearchResult>();
-		Traversal(word.trim().toLowerCase(),btree.getRoot());
-		Collections.sort(answer, new Comparator<ISearchResult>() {
+            throw new RuntimeErrorException(null);
+        if(word.trim().equals(""))
+            return new ArrayList<>();
+        answer=new ArrayList<ISearchResult>();
+        rkPairs = new HashMap<Integer, String>();
+        traverseSingleWord(word.toLowerCase().trim(),btree.getRoot());
+        putInAnswer();
+        return answer;
+//		if(word==null)
+//			throw new RuntimeErrorException(null);
+//		if(word.trim().equals(""))
+//			return new ArrayList<>();
+//		answer=new ArrayList<ISearchResult>();
+//		Traversal(word.trim().toLowerCase(),btree.getRoot());
+//		Collections.sort(answer, new Comparator<ISearchResult>() {
+//			@Override
+//			public int compare(ISearchResult o1, ISearchResult o2) {
+//				return Integer.parseInt(o1.getId()) - Integer.parseInt(o2.getId());
+//			}
+//		});
+//		return answer;
+	}
+	
+	private void traverseSingleWord(String word, IBTreeNode<String, String> root) {
+		if(root == null) return;
+		for (int i = 0; i < root.getKeys().size(); i++) {
+			visitKey(word, root.getValues().get(i), root.getKeys().get(i));
+		}
+		if(!root.isLeaf()) {
+			for(IBTreeNode<String, String> child : root.getChildren()) {
+				traverseSingleWord(word, child);
+			}
+		}
+	}
+	
+	private void traverseMulWord(IBTreeNode<String, String> root, List<String> permutations) {
+		if(root == null) return;
+		int max = 0;
+		String[] words;
+		for (int i = 0; i < root.getKeys().size(); i++) {
+			if(root.getKeys().get(i).equals("7697611")) {
+				boolean x = true;
+			}
+			max = 0;
+			for (String word : permutations) {
+				words = root.getValues().get(i).split("\\b" + word + "\\b");
+				if(words.length > 1) {
+					if ((max <= 0) || (words.length-1 > max)) max = words.length-1;
+				}
+			}
+			if(max > 0) storeResult(root.getKeys().get(i), max);
+		}
+		if(!root.isLeaf()) {
+			for(IBTreeNode<String, String> child : root.getChildren()) {
+				traverseMulWord(child, permutations);
+			}
+		}
+	}
+	
+	private void visitKey(String word, String text, String key) {
+		String[] words = text.split("\\b" + word + "\\b");
+		if(words.length > 1) storeResult(key, words.length-1);
+	}
+	
+	private void storeResult(String id, int rank) {
+		String key = rkPairs.get(rank);
+		if((key == null) || (id.compareTo(key) < 0)) {
+			rkPairs.put(rank, id);
+		}
+	}
+	
+	private void putInAnswer() {
+		Iterator<Map.Entry<Integer, String>> iter = rkPairs.entrySet().iterator();
+        while (iter.hasNext()) {
+			Map.Entry<Integer, String> entry = (Map.Entry<Integer, String>) iter.next();
+			answer.add(new SearchResult(entry.getValue(), entry.getKey()));
+		}
+        Collections.sort(answer, new Comparator<ISearchResult>() {
 			@Override
 			public int compare(ISearchResult o1, ISearchResult o2) {
-				return Integer.parseInt(o1.getId()) - Integer.parseInt(o2.getId());
+				return o1.getId().compareTo(o2.getId());
 			}
 		});
-		return answer;
 	}
 
 	private void Traversal(String word,IBTreeNode<String, String> root)
@@ -89,28 +165,64 @@ private List<ISearchResult>answer;
 
 	public List<ISearchResult> searchByMultipleWordWithRanking(String sentence) {
 		if(sentence==null)
-			throw new RuntimeErrorException(null);
-		if(sentence.trim().equals(""))
-			return new ArrayList<>();
-		sentence=sentence.trim();
-		String[] split = sentence.split("\\W+");
-		answer = searchByWordWithRanking(split[0]);
-		for(int i = 1; i < split.length; i++) {
-			String str = split[i];
-			List<ISearchResult> EachWord = searchByWordWithRanking(str);
-
-			List<ISearchResult> temp = new ArrayList<>();
-			for(ISearchResult list1 : answer) {
-				for(ISearchResult list2 : EachWord) {
-					if(list1.getId().equals(list2.getId())) {
-						temp.add(new SearchResult(list1.getId(), Math.min(list1.getRank(), list2.getRank())));
-					}
-				}
-			}
-			answer = temp;
-		}
-		return answer;
+            throw new RuntimeErrorException(null);
+        if(sentence.trim().equals(""))
+            return new ArrayList<>();
+        List<String> permutations = permuteWords(sentence.trim().toLowerCase());
+        answer=new ArrayList<ISearchResult>();
+        rkPairs = new HashMap<Integer, String>();
+        traverseMulWord(btree.getRoot(), permutations);
+        putInAnswer();
+        return answer;
+//		if(sentence==null)
+//			throw new RuntimeErrorException(null);
+//		if(sentence.trim().equals(""))
+//			return new ArrayList<>();
+//		sentence=sentence.trim();
+//		String[] split = sentence.split("\\W+");
+//		answer = searchByWordWithRanking(split[0]);
+//		for(int i = 1; i < split.length; i++) {
+//			String str = split[i];
+//			List<ISearchResult> EachWord = searchByWordWithRanking(str);
+//
+//			List<ISearchResult> temp = new ArrayList<>();
+//			for(ISearchResult list1 : answer) {
+//				for(ISearchResult list2 : EachWord) {
+//					if(list1.getId().equals(list2.getId())) {
+//						temp.add(new SearchResult(list1.getId(), Math.min(list1.getRank(), list2.getRank())));
+//					}
+//				}
+//			}
+//			answer = temp;
+//		}
+//		return answer;
 	}
+	
+	public static List<String> permuteWords(String s) {
+		String[] ss = s.split("\\W+");
+        boolean[] used = new boolean[ss.length];
+        String res = "";
+        List<String> List = new ArrayList<String>();
+        for(int i = 0; i < ss.length; i++) {
+        	permute(ss, used, res, 0, List, i+1);
+        }
+        return List;
+    }
+
+	private static void permute(String[] ss, boolean[] used, String res, int level, List<String> List, int size) {
+        if ((level == ss.length && res != "") || (level == size && res != ""))
+        {
+            List.add(res.trim());
+            return;
+        }
+        for (int i = 0; i < ss.length; i++)
+        {
+            if (used[i]) continue;
+            used[i] = true;
+            permute(ss, used, res + " " + ss[i], level + 1, List, size);
+            used[i] = false;
+        }
+    }
 
 	private void readAllFiles(File res, boolean ID) {
 		if(res.isDirectory()) {
