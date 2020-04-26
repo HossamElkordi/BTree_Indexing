@@ -24,7 +24,7 @@ import eg.edu.alexu.csd.filestructure.btree.SearchResult;
 public class UnitTest {
 	private final boolean debug = false;
 
-	/** 
+	/**
 	 * test get a null root.
 	 */
 	@Test
@@ -38,7 +38,7 @@ public class UnitTest {
 			root = btree.getRoot();
 			if (debug)
 				System.out.println("TestRootNull: (case null)");
-			if (root != null) 
+			if (root != null)
 				Assert.fail();
 		} catch (RuntimeErrorException ex) {
 			if (debug)
@@ -175,7 +175,7 @@ public class UnitTest {
 	public void testGetMinimumDegree() {
 
 		try {
-			for (int i = 2; i < 10; i++) {				
+			for (int i = 2; i < 10; i++) {
 				IBTree<String, String> btree = (IBTree<String, String>) TestRunner.getImplementationInstanceForInterface(IBTree.class, new Object[]{i});
 				Assert.assertEquals(i, btree.getMinimumDegree());
 			}
@@ -432,7 +432,7 @@ public class UnitTest {
 
 			for (int i = 0; i < rndNum.size(); i++) {
 				int searchKey = rndNum.get(i);
-				Assert.assertEquals("Lolo" + searchKey, btree.search(searchKey));				
+				Assert.assertEquals("Lolo" + searchKey, btree.search(searchKey));
 			}
 		} catch (Throwable e) {
 			TestRunner.fail("Fail to search in tree", e);
@@ -455,7 +455,7 @@ public class UnitTest {
 
 			for (int i = 0; i < inp.size(); i++) {
 				int searchKey = inp.get(i);
-				Assert.assertEquals("Soso" + searchKey, btree.search(searchKey));				
+				Assert.assertEquals("Soso" + searchKey, btree.search(searchKey));
 			}
 
 		} catch (Throwable e) {
@@ -525,7 +525,7 @@ public class UnitTest {
 		try {
 			List<Integer> inp = Arrays.asList(new Integer[]{1, 3, 7, 10, 11, 13, 14, 15, 18, 16, 19, 24, 25, 26, 21, 4, 5, 20, 22, 2, 17, 12, 6});
 			for (int i : inp)
-				btree.insert(i, "Soso" + i); 
+				btree.insert(i, "Soso" + i);
 
 			Assert.assertNull(btree.search(23));
 			Assert.assertNull(btree.search(0));
@@ -577,7 +577,7 @@ public class UnitTest {
 
 			for (int i = 0; i < rndNum.size(); i++) {
 				Assert.assertTrue(btree.delete(rndNum.get(i)));
-				Assert.assertTrue(verifyBTree(root, 0, getHeight(root), 5, root));				
+				Assert.assertTrue(verifyBTree(root, 0, getHeight(root), 5, root));
 			}
 
 
@@ -647,7 +647,7 @@ public class UnitTest {
 		} catch (Throwable e) {
 			TestRunner.fail("Fail to delete in tree", e);
 		}
-	}	
+	}
 
 	/**
 	 * Test deletion complex case 3.
@@ -758,12 +758,12 @@ public class UnitTest {
 			for (ISearchResult searchRes : actual) {
 				System.out.println(searchRes.toString());
 			}
-//			Collections.sort(actual, new Comparator<ISearchResult>() {
-//				@Override
-//				public int compare(ISearchResult o1, ISearchResult o2) {
-//					return o1.getRank() - o2.getRank();
-//				}
-//			});
+			Collections.sort(actual, new Comparator<ISearchResult>() {
+				@Override
+				public int compare(ISearchResult o1, ISearchResult o2) {
+					return o1.getRank() - o2.getRank();
+				}
+			});
 
 			for (int i = 0; i < expected.size(); i++) {
 				Assert.assertEquals(expected.get(i).getId(), actual.get(i).getId());
@@ -825,12 +825,12 @@ public class UnitTest {
 			for (ISearchResult searchRes : actual) {
 				System.out.println(searchRes.toString());
 			}
-//			Collections.sort(actual, new Comparator<ISearchResult>() {
-//				@Override
-//				public int compare(ISearchResult o1, ISearchResult o2) {
-//					return o1.getRank() - o2.getRank();
-//				}
-//			});
+			Collections.sort(actual, new Comparator<ISearchResult>() {
+				@Override
+				public int compare(ISearchResult o1, ISearchResult o2) {
+					return o1.getRank() - o2.getRank();
+				}
+			});
 
 			for (int i = 0; i < expected.size(); i++) {
 				Assert.assertEquals(expected.get(i).getId(), actual.get(i).getId());
@@ -850,7 +850,7 @@ public class UnitTest {
 		ISearchEngine searchEngine = (ISearchEngine) TestRunner.getImplementationInstanceForInterface(ISearchEngine.class, new Object[]{100});
 		/**
 		 * This test should be modified according to the testing directory and the search query.
-		 * You should make sure that the test can support multiple file in the same directory 
+		 * You should make sure that the test can support multiple file in the same directory
 		 * or nested directory up to multiple level.
 		 * You should test your implementation against cases including:
 		 * 1- word that does not exist in tree.
@@ -865,12 +865,12 @@ public class UnitTest {
 			for (ISearchResult searchRes : actual) {
 				System.out.println(searchRes.toString());
 			}
-//			Collections.sort(actual, new Comparator<ISearchResult>() {
-//				@Override
-//				public int compare(ISearchResult o1, ISearchResult o2) {
-//					return o1.getRank() - o2.getRank();
-//				}
-//			});
+			Collections.sort(actual, new Comparator<ISearchResult>() {
+				@Override
+				public int compare(ISearchResult o1, ISearchResult o2) {
+					return o1.getRank() - o2.getRank();
+				}
+			});
 
 			for (int i = 0; i < expected.size(); i++) {
 				Assert.assertEquals(expected.get(i).getId(), actual.get(i).getId());
@@ -1030,7 +1030,7 @@ public class UnitTest {
 			TestRunner.fail("Fail to search web page", e);
 		}
 	}
-	
+
 	/**
 	 * Test searchByMultipleWordWithRanking with null or empty parameter.
 	 */
@@ -1075,12 +1075,12 @@ public class UnitTest {
 			for (ISearchResult searchRes : actual) {
 				System.out.println(searchRes.toString());
 			}
-//			Collections.sort(actual, new Comparator<ISearchResult>() {
-//				@Override
-//				public int compare(ISearchResult o1, ISearchResult o2) {
-//					return o1.getRank() - o2.getRank();
-//				}
-//			});
+			Collections.sort(actual, new Comparator<ISearchResult>() {
+				@Override
+				public int compare(ISearchResult o1, ISearchResult o2) {
+					return o1.getRank() - o2.getRank();
+				}
+			});
 
 			for (int i = 0; i < expected.size(); i++) {
 				Assert.assertEquals(expected.get(i).getId(), actual.get(i).getId());
@@ -1090,7 +1090,7 @@ public class UnitTest {
 			TestRunner.fail("Fail to index directory", e);
 		}
 	}
-	
+
 	private int getHeight (IBTreeNode<?, ?> node) {
 		if (node.isLeaf()) return 0;
 
@@ -1098,7 +1098,7 @@ public class UnitTest {
 	}
 
 	private boolean verifyBTree (IBTreeNode<?, ?> node, int lvl, int height, int t, IBTreeNode<?, ?> root) {
-		if (!node.equals(root)) 
+		if (!node.equals(root))
 			if (node.getNumOfKeys() < t - 1 || node.getNumOfKeys() > 2 * t - 1)
 				return false;
 		boolean ans = true;
@@ -1112,19 +1112,19 @@ public class UnitTest {
 			ans = ans && (lvl == height);
 		}
 		return ans;
-	} 
+	}
 
 	private void traverseTreeInorder(IBTreeNode<Integer, String> node, List<Integer> keys, List<String> vals) {
-		int i; 
-		for (i = 0; i < node.getNumOfKeys(); i++) 
-		{ 
+		int i;
+		for (i = 0; i < node.getNumOfKeys(); i++)
+		{
 
-			if (!node.isLeaf()) 
+			if (!node.isLeaf())
 				traverseTreeInorder(node.getChildren().get(i), keys, vals);
 			keys.add(node.getKeys().get(i));
 			vals.add(node.getValues().get(i));
-		} 
-		if (!node.isLeaf()) 
+		}
+		if (!node.isLeaf())
 			traverseTreeInorder(node.getChildren().get(i), keys, vals);
 	}
 

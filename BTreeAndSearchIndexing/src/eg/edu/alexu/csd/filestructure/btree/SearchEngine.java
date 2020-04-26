@@ -91,20 +91,17 @@ public class SearchEngine implements ISearchEngine{
 	
 	private void traverseMulWord(IBTreeNode<String, String> root, List<String> permutations) {
 		if(root == null) return;
-		int max = 0;
+		int min ;
 		String[] words;
 		for (int i = 0; i < root.getKeys().size(); i++) {
-			if(root.getKeys().get(i).equals("7697611")) {
-				boolean x = true;
-			}
-			max = 0;
+			min = 0;
 			for (String word : permutations) {
 				words = root.getValues().get(i).split("\\b" + word + "\\b");
 				if(words.length > 1) {
-					if ((max <= 0) || (words.length-1 > max)) max = words.length-1;
+					if ((min <= 0) || (words.length-1 < min)) min = words.length-1;
 				}
 			}
-			if(max > 0) storeResult(root.getKeys().get(i), max);
+			if(min > 0) storeResult(root.getKeys().get(i), min);
 		}
 		if(!root.isLeaf()) {
 			for(IBTreeNode<String, String> child : root.getChildren()) {
@@ -126,20 +123,18 @@ public class SearchEngine implements ISearchEngine{
 	}
 	
 	private void putInAnswer() {
-		Iterator<Map.Entry<Integer, String>> iter = rkPairs.entrySet().iterator();
-        while (iter.hasNext()) {
-			Map.Entry<Integer, String> entry = (Map.Entry<Integer, String>) iter.next();
+		for (Map.Entry<Integer, String> entry : rkPairs.entrySet()) {
 			answer.add(new SearchResult(entry.getValue(), entry.getKey()));
 		}
-        Collections.sort(answer, new Comparator<ISearchResult>() {
+        /*Collections.sort(answer, new Comparator<ISearchResult>() {
 			@Override
 			public int compare(ISearchResult o1, ISearchResult o2) {
 				return o1.getId().compareTo(o2.getId());
 			}
-		});
+		});*/
 	}
 
-	private void Traversal(String word,IBTreeNode<String, String> root)
+	/*private void Traversal(String word,IBTreeNode<String, String> root)
 	{
 		if(root==null)
 			return;
@@ -161,7 +156,7 @@ public class SearchEngine implements ISearchEngine{
 			for(IBTreeNode<String, String> child:root.getChildren())
 				Traversal(word, child);
 		}
-	}
+	}*/
 
 	public List<ISearchResult> searchByMultipleWordWithRanking(String sentence) {
 		if(sentence==null)
@@ -210,7 +205,7 @@ public class SearchEngine implements ISearchEngine{
     }
 
 	private static void permute(String[] ss, boolean[] used, String res, int level, List<String> List, int size) {
-        if ((level == ss.length && res != "") || (level == size && res != ""))
+        if ((level == ss.length && !res.equals("")) || (level == size && !res.equals("")))
         {
             List.add(res.trim());
             return;
