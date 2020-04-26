@@ -758,12 +758,12 @@ public class UnitTest {
 			for (ISearchResult searchRes : actual) {
 				System.out.println(searchRes.toString());
 			}
-			Collections.sort(actual, new Comparator<ISearchResult>() {
-				@Override
-				public int compare(ISearchResult o1, ISearchResult o2) {
-					return o1.getRank() - o2.getRank();
-				}
-			});
+//			Collections.sort(actual, new Comparator<ISearchResult>() {
+//				@Override
+//				public int compare(ISearchResult o1, ISearchResult o2) {
+//					return o1.getRank() - o2.getRank();
+//				}
+//			});
 
 			for (int i = 0; i < expected.size(); i++) {
 				Assert.assertEquals(expected.get(i).getId(), actual.get(i).getId());
@@ -825,12 +825,12 @@ public class UnitTest {
 			for (ISearchResult searchRes : actual) {
 				System.out.println(searchRes.toString());
 			}
-			Collections.sort(actual, new Comparator<ISearchResult>() {
-				@Override
-				public int compare(ISearchResult o1, ISearchResult o2) {
-					return o1.getRank() - o2.getRank();
-				}
-			});
+//			Collections.sort(actual, new Comparator<ISearchResult>() {
+//				@Override
+//				public int compare(ISearchResult o1, ISearchResult o2) {
+//					return o1.getRank() - o2.getRank();
+//				}
+//			});
 
 			for (int i = 0; i < expected.size(); i++) {
 				Assert.assertEquals(expected.get(i).getId(), actual.get(i).getId());
@@ -865,12 +865,12 @@ public class UnitTest {
 			for (ISearchResult searchRes : actual) {
 				System.out.println(searchRes.toString());
 			}
-			Collections.sort(actual, new Comparator<ISearchResult>() {
-				@Override
-				public int compare(ISearchResult o1, ISearchResult o2) {
-					return o1.getRank() - o2.getRank();
-				}
-			});
+//			Collections.sort(actual, new Comparator<ISearchResult>() {
+//				@Override
+//				public int compare(ISearchResult o1, ISearchResult o2) {
+//					return o1.getRank() - o2.getRank();
+//				}
+//			});
 
 			for (int i = 0; i < expected.size(); i++) {
 				Assert.assertEquals(expected.get(i).getId(), actual.get(i).getId());
@@ -1075,12 +1075,12 @@ public class UnitTest {
 			for (ISearchResult searchRes : actual) {
 				System.out.println(searchRes.toString());
 			}
-			Collections.sort(actual, new Comparator<ISearchResult>() {
-				@Override
-				public int compare(ISearchResult o1, ISearchResult o2) {
-					return o1.getRank() - o2.getRank();
-				}
-			});
+//			Collections.sort(actual, new Comparator<ISearchResult>() {
+//				@Override
+//				public int compare(ISearchResult o1, ISearchResult o2) {
+//					return o1.getRank() - o2.getRank();
+//				}
+//			});
 
 			for (int i = 0; i < expected.size(); i++) {
 				Assert.assertEquals(expected.get(i).getId(), actual.get(i).getId());
